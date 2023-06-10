@@ -154,8 +154,8 @@ public class VoiceTypingApp {
             } else if (command.startsWith("click")) {
                 System.out.println("Current command: " + command);
                 String[] parts = command.split(" ");
-                int x = Integer.parseInt(parts[1]);
-                int y = Integer.parseInt(parts[2]);
+                int x = Integer.parseInt(parts[3]);
+                int y = Integer.parseInt(parts[1]);
 
                 // Perform the mouse click at the specified coordinates
                 scaleOverlay.simulateClick(x, y);

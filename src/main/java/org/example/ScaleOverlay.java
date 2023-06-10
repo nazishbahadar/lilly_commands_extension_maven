@@ -1,20 +1,18 @@
 package org.example;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
-import javax.swing.*;
 
-public class ScaleOverlay extends JFrame {
+public class ScaleOverlay extends JWindow {
     private Robot robot;
     private int stepSize;
 
     public ScaleOverlay() {
         super();
 
-        setUndecorated(true);
         setBackground(new Color(0, 0, 0, 0)); // Transparent
         setSize(Toolkit.getDefaultToolkit().getScreenSize());
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         try {
             robot = new Robot();
@@ -23,8 +21,7 @@ public class ScaleOverlay extends JFrame {
         }
 
         setAlwaysOnTop(true);
-        setType(Type.POPUP);
-        stepSize = 100; // Change as per requirement
+        stepSize = 25; // Change as per requirement
 
         setVisible(true);
     }
@@ -36,19 +33,39 @@ public class ScaleOverlay extends JFrame {
         int screenWidth = getSize().width;
         int screenHeight = getSize().height;
         int markerLength = 10; // Length of the scale marker
+        int textOffsetX = 30; // Offset of the text from the scale marker
+        int textOffsetY = 20; // Offset of the text from the scale marker
+        int secondRowOffset = 15; // Offset for the second row of numbers
+        int textMargin = 5; // Margin between numbers on y-axis
 
-        g.setColor(Color.RED);
+        g.setColor(Color.RED); // For the lines
 
         // draw x scale
         for(int x = 0; x < screenWidth; x += stepSize) {
+            // Top scale
             g.drawLine(x, 0, x, markerLength);
-            g.drawString(String.valueOf(x), x, markerLength + 20);
+            // Bottom scale
+            g.drawLine(x, screenHeight, x, screenHeight - markerLength);
+            if (x % stepSize == 0) {
+                g.setColor(Color.YELLOW); // For the text
+                g.drawString(String.valueOf(x), x, textOffsetX + (x % (2*stepSize) == 0 ? 0 : secondRowOffset));
+                g.drawString(String.valueOf(x), x, screenHeight - textOffsetX + (x % (2*stepSize) == 0 ? 0 : -secondRowOffset));
+                g.setColor(Color.RED); // Change it back to red for the lines
+            }
         }
 
         // draw y scale
         for(int y = 0; y < screenHeight; y += stepSize) {
+            // Left scale
             g.drawLine(0, y, markerLength, y);
-            g.drawString(String.valueOf(y), markerLength + 10, y + 20);
+            // Right scale
+            g.drawLine(screenWidth, y, screenWidth - markerLength, y);
+            if (y % stepSize == 0) {
+                g.setColor(Color.YELLOW); // For the text
+                g.drawString(String.valueOf(y), textOffsetY, y + textMargin);
+                g.drawString(String.valueOf(y), screenWidth - textOffsetY, y + textMargin);
+                g.setColor(Color.RED); // Change it back to red for the lines
+            }
         }
     }
 
