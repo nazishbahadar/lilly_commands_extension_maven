@@ -27,7 +27,7 @@ public class KeyboardListener implements NativeKeyListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             String typedTextString = typedText.toString().toLowerCase();
-            if (typedTextString.contains("command") || typedTextString.contains("shortcut") || typedTextString.contains("insert")) {
+            if (typedTextString.contains("command") || typedTextString.contains("shortcut") || typedTextString.contains("insert") || typedTextString.contains("click")) {
                 System.out.println(typedTextString);
                 sendQuery.accept(typedTextString);
                 VoiceTypingApp.resetLilly(2);

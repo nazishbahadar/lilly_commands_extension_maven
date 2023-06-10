@@ -1,5 +1,7 @@
 package org.example;
 
+//import com.github.kwhat.jnativehook.GlobalScreen;
+
 import com.github.kwhat.jnativehook.GlobalScreen;
 
 import java.awt.*;
@@ -13,12 +15,14 @@ public class VoiceTypingApp {
     private static final Map<String, Integer> KEY_MAP = createKeyMap();
     public static volatile boolean commandsRunning = false;
     private static volatile KeyboardListener keyboardMouseListener;
-
+    private static ScaleOverlay scaleOverlay;
 
     public static void main(String[] args) {
         KeyboardListener.register();
         keyboardMouseListener = new KeyboardListener(VoiceTypingApp::runQuery);
         GlobalScreen.addNativeKeyListener(keyboardMouseListener);
+
+        scaleOverlay = new ScaleOverlay();
     }
 
 
@@ -122,7 +126,7 @@ public class VoiceTypingApp {
         System.out.println("Current voice input " + voiceInput);
         // Split the voice input based on "shortcut" and "insert"
         List<String> commands = new ArrayList<>();
-        Matcher matcher = Pattern.compile("((shortcut|insert|command).+?)(?=shortcut|insert|command|$)").matcher(voiceInput);
+        Matcher matcher = Pattern.compile("((shortcut|insert|command|click).+?)(?=shortcut|insert|command|click|$)").matcher(voiceInput);
         while (matcher.find()) {
             commands.add(matcher.group(1).trim());
         }
@@ -147,6 +151,14 @@ public class VoiceTypingApp {
                 System.out.println("Current command: " + command);
                 String keysString = command.substring("command ".length());
                 pressKeys(keysString);
+            } else if (command.startsWith("click")) {
+                System.out.println("Current command: " + command);
+                String[] parts = command.split(" ");
+                int x = Integer.parseInt(parts[1]);
+                int y = Integer.parseInt(parts[2]);
+
+                // Perform the mouse click at the specified coordinates
+                scaleOverlay.simulateClick(x, y);
             }
         }
     }
